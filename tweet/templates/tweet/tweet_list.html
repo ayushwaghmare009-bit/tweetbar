@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Home - Tweetbar
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Tweets</h2>
+        {% if user.is_authenticated %}
+            <a href="{% url 'tweet_create' %}" class="btn btn-primary">Create Tweet</a>
+        {% endif %}
+    </div>
+
+    <!-- Search feedback header -->
+    {% if request.GET.search %}
+        <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <span>Search results for: <strong>"{{ request.GET.search }}"</strong></span>
+            <a href="{% url 'tweet_list' %}" class="btn btn-sm btn-outline-secondary">Clear Search</a>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        {% for tweet in tweets %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    {% if tweet.photo %}
+                        <img src="{{ tweet.photo.url }}" class="card-img-top" alt="Tweet image" style="max-height: 300px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">@{{ tweet.user.username }}</h5>
+                        <p class="card-text">{{ tweet.text }}</p>
+                        <small class="text-muted">{{ tweet.created_at|timesince }} ago</small>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+                        <div>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'tweet_like' tweet.id %}" class="btn btn-sm btn-outline-danger">
+                                    ❤️ {{ tweet.total_likes }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">❤️ {{ tweet.total_likes }}</span>
+                            {% endif %}
+                        </div>
+
+                        {% if tweet.user == user %}
+                            <div>
+                                <a href="{% url 'tweet_edit' tweet.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'tweet_delete' tweet.id %}" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                {% if request.GET.search %}
+                    <h4 class="text-muted">No tweets or users found matching "{{ request.GET.search }}"</h4>
+                    <p class="text-muted">Try checking for typos or searching for a different keyword.</p>
+                    <a href="{% url 'tweet_list' %}" class="btn btn-primary mt-2">View All Tweets</a>
+                {% else %}
+                    <h4 class="text-muted">No tweets available yet.</h4>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'tweet_create' %}" class="btn btn-primary mt-2">Be the first to tweet!</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
