@@ -1,15 +1,53 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 
 {% block content %}
+<div class="container mt-4" style="max-width: 500px;">
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <h3 class="text-center mb-3">Login</h3>
 
-<h2>Login form</h2>
-<form method='post'>
-    {% csrf_token %}
-    {{form.as_p}}
-    <button class="btn btn-primary">Register</button>
+      <!-- Alert for invalid credentials -->
+      {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          Please enter a correct username and password. Note that both fields may be case-sensitive.
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endif %}
 
-</form>
-<p>Don't have an account? <a href="{% url 'register' %}
-    ">Register here</a></p>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
 
+        <!-- Show Password Checkbox -->
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="toggleLoginPassword">
+          <label class="form-check-label" for="toggleLoginPassword">
+            Show Password
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+
+      <div class="text-center mt-3">
+        <small class="text-muted">Don't have an account? <a href="{% url 'register' %}">Register here</a></small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to handle Show/Hide Password -->
+<script>
+  document.getElementById('toggleLoginPassword').addEventListener('change', function() {
+    const passwordInput = document.querySelector('input[type="password"], input[data-toggle-password="true"]');
+    if (passwordInput) {
+      if (this.checked) {
+        passwordInput.type = 'text';
+        passwordInput.setAttribute('data-toggle-password', 'true');
+      } else {
+        passwordInput.type = 'password';
+      }
+    }
+  });
+</script>
 {% endblock %}
