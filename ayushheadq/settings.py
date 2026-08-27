@@ -26,7 +26,11 @@ SECRET_KEY = 'django-insecure-wov%30cq3t00qqdo=^e!^7+0-v(a_^v_ha86r@l02rpemz8v!l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://tweetbar-xt8k.onrender.com',
+]
 
 
 # Application definition
